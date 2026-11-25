@@ -4559,5 +4559,58 @@ function i18nAudit(){
   setTimeout(run,600);
 })();
 </script>
+<script>
+/* ---------- v27: merchant dashboard + store gate English strings ---------- */
+(function(){
+  var X={
+'ميّز متجرك عن باقي المتاجر: لوقو، لون خاص، ألبوم صور، بياناتك، وموقعك على الخريطة - كلها بتظهر في صفحة متجرك للزبائن.':'Stand out from other stores: logo, custom color, photo album, your details and your map location - all shown on your store page to customers.',
+'بدور لابتوب للجرافيك ديزاين، معالج i7 وكارت شاشة قوي، شاشة 15 بوصة':'Looking for a laptop for graphic design, i7 processor, strong graphics card, 15-inch screen',
+'لابتوب خفيف للدراسة والمحاضرات، بطارية كويسة':'Light laptop for study and lectures, good battery',
+'كل زبون سجّل اهتمامه بجهازك بظهر هنا مع مصدره ودرجة جديته. حدّث حالة كل عميل لحد ما تقفل البيعة.':'Every customer who registers interest in your laptop appears here with their source and seriousness level. Update each customer\'s status until you close the sale.',
+'ما في إرسال جماعي تلقائي - دا بحتاج WhatsApp Business API (مخطط).':'No automatic bulk sending - this needs the WhatsApp Business API (planned).',
+'عملاء تأخّرت متابعتهم (جديد: بعد ساعتين · قيد المتابعة: بعد ٤٨ ساعة · ينتظر الدفع: بعد ٢٤ ساعة). الضغط على "واتساب" بفتح رسالة جاهزة تراجعها وترسلها بنفسك، ما في إرسال تلقائي.':'Customers whose follow-up is overdue (new: after 2 hours · in progress: after 48 hours · awaiting payment: after 24 hours). Tapping "WhatsApp" opens a ready message you review and send yourself. Nothing is sent automatically.',
+'· قيد التفاوض · من LabSouq':'· Negotiating · from LabSouq',
+'· تم التواصل · من Facebook':'· Contacted · from Facebook',
+'· جديد · من Facebook':'· New · from Facebook',
+'· جديد · من طلب السوق':'· New · from a market request',
+'اختار الطريقة اللي تناسب متجرك: عمولة على البيعات المنسوبة للمنصة، أو اشتراك شهري بميزات أوسع.':'Choose the way that suits your store: a commission on sales attributed to the platform, or a monthly subscription with wider features.',
+'Starter - البداية':'Starter','Growth - النمو':'Growth','Pro - الاحتراف':'Pro',
+'⚠️ النشر الفعلي على فيسبوك وإنستغرام بحتاج ربطاً رسمياً بحسابات Meta (حساب احترافي + مراجعة التطبيق)، وربط WhatsApp Business Platform مخطط لاحقاً - الاثنين يتطلبان موافقات رسمية. اللي تحت دا محاكاة للتجربة + روابط تتبع حقيقية شغالة في العرض.':'⚠️ Actual publishing to Facebook and Instagram needs an official link to Meta accounts (professional account + app review), and connecting the WhatsApp Business Platform is planned for later - both require official approvals. What is below is a demo simulation plus real working tracking links.',
+'أي زبون يدخل من الرابط دا ويسجّل اهتمامه، بتسجل مصدره تلقائياً في لوحة العملاء فوق. استخدم الروابط دي في كل منشوراتك وإعلاناتك.':'Any customer who enters from this link and registers interest has their source recorded automatically on the customers board above. Use these links in all your posts and ads.',
+'المنصة بتوصلك بالزبون بس - البيع والقبض بحصل بينك وبينه مباشرة. لما تكمل الصفقة، أكّد البيع هنا وعمولة المنصة بتتسجل على حسابك بنسبتها المجمدة وقت الطلب.':'The platform only connects you with the customer - the sale and payment happen directly between you and them. When the deal is done, confirm the sale here and the platform commission is recorded on your account at the rate frozen at order time.',
+'العمولة متمايزة:':'Tiered commission:','٣٪ للأجهزة الجديدة':'3% for new laptops','٦٪ للمستعمل المفحوص':'6% for inspected used laptops',
+'، والنسبة بتتجمد وقت الطلب وما بتتأثر بأي تغيير لاحق.':', and the rate is frozen at order time and not affected by any later change.',
+'ليش تسجل في لاب سوق؟ زبائن جادين بمواصفات وميزانيات واضحة، عروض تفاوض بتوصلك مباشرة، وتقارير ذكاء سوق بتوريك سعرك مقارنة بمتوسط سوقك لحظة بلحظة. التسجيل مجاني - عمولة متمايزة (3% جديد / 6% مستعمل مفحوص) بتتسجل بس لما تتم الصفقة فعلاً.':'Why register on LabSouq? Serious customers with clear specs and budgets, negotiation offers that reach you directly, and market intelligence reports that show your price against your market average moment by moment. Registration is free - a tiered commission (3% new / 6% inspected used) is recorded only when the deal is actually completed.',
+'ملاحظة: المتاجر الجديدة بتظهر بحالة "قيد التوثيق" لحد ما إدارة المنصة تراجعها وتديك شارة ✓ موثق.':'Note: new stores appear as "Pending verification" until the platform team reviews them and gives you the ✓ Verified badge.',
+'☁️ دخول التاجر بالإيميل':'☁️ Merchant sign-in by email',
+'لو متجرك مسجل على السيرفر: كود تحقق بوصل إيميلك وبتدخل لوحتك من أي جهاز.':'If your store is registered on the server: a verification code is sent to your email and you enter your dashboard from any device.',
+'أرسل الكود':'Send code'
+  };
+  var NM={'سامي':'Sami','منى':'Mona','خالد':'Khaled','محمد علي':'Mohammed Ali','سارة أحمد':'Sara Ahmed','أحمد محمد':'Ahmed Mohammed','موسى آدم':'Musa Adam','خالد عمر':'Khaled Omar'};
+  Object.keys(X).forEach(function(k){I18N[k]=X[k];});
+  Object.keys(NM).forEach(function(k){if(!I18N[k])I18N[k]=NM[k];});
+  function nm(s){return NM[s]||s;}
+  function dg(s){return s.replace(/[\u200f\u200e]/g,'').replace(/[٠-٩]/g,function(d){return '٠١٢٣٤٥٦٧٨٩'.indexOf(d);});}
+  var RX=[
+   [/^(.*?)(LS-\d+) · (\S.*)$/,function(m){return m[1]+m[2]+' · '+nm(m[3]);}],
+   [/^([🔎🛒💬]) (.+)$/u,function(m){return NM[m[2]]?m[1]+' '+NM[m[2]]:null;}],
+   [/^💰 قيمة البيعات المغلقة في الفترة: (.+?) · عمولة المنصة التقديرية: (.+)$/,function(m){return '💰 Closed sales value in the period: '+m[1]+' · Estimated platform commission: '+m[2];}],
+   [/^· اتبعت (\d+) رسالة إنقاذ، رجع منها (\d+) بيعة\.$/,function(m){return '· Sent '+m[1]+' rescue messages, '+m[2]+' recovered as sales.';}],
+   [/^أهلاً (.+?)، آخر مرة سألت عن (.+?)\. لسع محتاج لابتوب؟ لو اتغيرت ميزانيتك أو استخدامك أقدر أرشّح ليك الأنسب\.$/,function(m){return 'Hello '+nm(m[1])+', last time you asked about '+m[2]+'. Still need a laptop? If your budget or use changed, I can recommend the best fit.';}],
+   [/^أهلاً (.+?)، بخصوص (.+?): عندنا (.+?) بسعر (.+?) متوفر، وممكن نتفق على سعر أحسن\. تحب أبعت ليك التفاصيل؟$/,function(m){return 'Hello '+nm(m[1])+', about '+m[2]+': we have '+m[3]+' available at '+m[4]+', and we can agree on a better price. Want me to send you the details?';}],
+   [/^شنو البطلبو زبائن سوقك \(طلبات بحث ×(\S+)، عملاء ×(\S+)، ضغطات ×(\S+)\) مقابل مخزونك\. الأرقام من نشاط النسخة الحالية، ولما تتجمع بيانات حقيقية بتتحدث تلقائياً\.$/,function(m){return 'What your market customers are asking for (search requests ×'+m[1]+', customers ×'+m[2]+', clicks ×'+m[3]+') against your stock. Numbers come from this version\'s activity and update automatically once real data accumulates.';}],
+   [/^علّم على العملاء الموافقين على استلام العروض \((\d+) من (\d+)\)، اكتب عرضك، وكل عميل بفتح ليه واتساب برسالة جاهزة ترسلها بنفسك\.$/,function(m){return 'Select customers who agreed to receive offers ('+m[1]+' of '+m[2]+'), write your offer, and a WhatsApp chat opens for each customer with a ready message you send yourself.';}],
+   [/^· ([٠-٩\u200f\/]+)$/,function(m){return '· '+dg(m[1]);}]
+  ];
+  var prev=trStr;
+  window.trStr=trStr=function(k){
+    var r=prev(k);if(r!==k)return r;
+    var t=String(k).trim();
+    for(var i=0;i<RX.length;i++){var m=t.match(RX[i][0]);if(m){var o=RX[i][1](m);if(o)return k.replace(t,dg(o));}}
+    return r;
+  };
+  window.__i18n27=true;
+})();
+</script>
 </body>
 </html>
