@@ -910,7 +910,7 @@ button:active{transform:none}
   <div class="fgrid">
     <div><label>اسمك</label><input id="rName" placeholder="الاسم"></div>
     <div><label>رقم تلفونك</label><input id="rPhone" placeholder="09xxxxxxxx"></div>
-    <div><label>مدينتك</label><input id="rCity" placeholder="الخرطوم"></div>
+    <div><label>مدينتك</label><select id="rCity"></select></div>
     <div><label>الاستخدام</label><select id="rUsage"><option>ألعاب</option><option>تصميم ومونتاج</option><option>برمجة</option><option>دراسة</option><option>أعمال</option><option>تصفح خفيف</option></select></div>
     <div><label>الماركة المفضلة</label><select id="rBrand"><option>أي ماركة</option><option>Dell</option><option>HP</option><option>Lenovo</option><option>Asus</option><option>Apple</option><option>MSI</option></select></div>
     <div><label>الحالة</label><select id="rCond"><option>أي حالة</option><option>جديد</option><option>مستعمل</option></select></div>
@@ -1124,10 +1124,15 @@ function save(){localStorage.setItem(KEY,JSON.stringify(S));}
 function commRate(){return S.commRate||0.03;}
 function commRateFor(l){const used=l&&l.cond==='مستعمل';return used?(S.commRateUsed!=null?S.commRateUsed:0.06):(S.commRateNew!=null?S.commRateNew:(S.commRate||0.03));}
 const MARKETS={
-  SD:{name:'السودان',flag:'🇸🇩',cur:'ج.س',cities:['الخرطوم','أم درمان','بحري','بورتسودان']},
-  EG:{name:'مصر',flag:'🇪🇬',cur:'ج.م',cities:['القاهرة','الجيزة','الإسكندرية','المنصورة']}
+  SD:{name:'السودان',flag:'🇸🇩',cur:'ج.س',cities:['الشمالية','نهر النيل','البحر الأحمر','كسلا','القضارف','الخرطوم','الجزيرة','سنار','النيل الأبيض','النيل الأزرق','شمال كردفان','جنوب كردفان','غرب كردفان','شمال دارفور','جنوب دارفور','غرب دارفور','وسط دارفور','شرق دارفور']},
+  EG:{name:'مصر',flag:'🇪🇬',cur:'ج.م',cities:['القاهرة','الجيزة','الإسكندرية','القليوبية','البحيرة','الغربية','المنوفية','الدقهلية','الشرقية','دمياط','كفر الشيخ','بورسعيد','الإسماعيلية','السويس','الفيوم','بني سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','مطروح','البحر الأحمر','الوادي الجديد','شمال سيناء','جنوب سيناء']}
 };
 function mkt(){return MARKETS[S.market||'SD'];}
+const CITY_EN={'الشمالية':'Northern','نهر النيل':'River Nile','البحر الأحمر':'Red Sea','كسلا':'Kassala','القضارف':'Gedaref','الخرطوم':'Khartoum','الجزيرة':'Gezira','سنار':'Sennar','النيل الأبيض':'White Nile','النيل الأزرق':'Blue Nile','شمال كردفان':'North Kordofan','جنوب كردفان':'South Kordofan','غرب كردفان':'West Kordofan','شمال دارفور':'North Darfur','جنوب دارفور':'South Darfur','غرب دارفور':'West Darfur','وسط دارفور':'Central Darfur','شرق دارفور':'East Darfur','البحر الأحمر':'Red Sea','القاهرة':'Cairo','الجيزة':'Giza','الإسكندرية':'Alexandria','القليوبية':'Qalyubia','البحيرة':'Beheira','الغربية':'Gharbia','المنوفية':'Menoufia','الدقهلية':'Dakahlia','الشرقية':'Sharqia','دمياط':'Damietta','كفر الشيخ':'Kafr El Sheikh','بورسعيد':'Port Said','الإسماعيلية':'Ismailia','السويس':'Suez','الفيوم':'Faiyum','بني سويف':'Beni Suef','المنيا':'Minya','أسيوط':'Assiut','سوهاج':'Sohag','قنا':'Qena','الأقصر':'Luxor','أسوان':'Aswan','مطروح':'Matrouh','الوادي الجديد':'New Valley','شمال سيناء':'North Sinai','جنوب سيناء':'South Sinai'};
+const CITY_STATE={'أم درمان':'الخرطوم','بحري':'الخرطوم','بورتسودان':'البحر الأحمر','المنصورة':'الدقهلية'};
+function stateOf(c){return CITY_STATE[c]||c;}
+function cityLbl(c){return (S.lang==='en'&&CITY_EN[c])?CITY_EN[c]+' - '+c:c;}
+function cityOpts(sel,first){const m=mkt();return (first?'<option value="">'+first+'</option>':'')+'<optgroup label="'+m.flag+' '+(S.lang==='en'?(S.market==='EG'?'Egypt - governorates':'Sudan - states'):(S.market==='EG'?'مصر - المحافظات (27)':'السودان - الولايات (18)'))+'">'+m.cities.map(c=>'<option value="'+c+'"'+(sel===c?' selected':'')+'>'+cityLbl(c)+'</option>').join('')+'</optgroup>';}
 function cur(){return mkt().cur;}
 if(!S.fx)S.fx={SD:2500,EG:48};
 const USDRATE=S.fx;
@@ -1216,7 +1221,7 @@ enrichData();
 
 /* ---------- buyer ---------- */
 function buildFilters(){
-  const mk=(id,vals,cls,cf)=>{document.getElementById(id).innerHTML=vals.map(v=>`<label class="fcheck"><input type="checkbox" class="${cls}" value="${esc(v)}" onchange="renderShop()"> ${esc(v)}${cf?` <span class="fcnt">${cf(v)}</span>`:''}</label>`).join('');};
+  const mk=(id,vals,cls,cf)=>{document.getElementById(id).innerHTML=vals.map(v=>`<label class="fcheck"><input type="checkbox" class="${cls}" value="${esc(v)}" onchange="renderShop()"> ${esc(cls==='f-city'?cityLbl(v):v)}${cf?` <span class="fcnt">${cf(v)}</span>`:''}</label>`).join('');};
   const mLaps=S.laptops.filter(l=>(storeOf(l).market||'SD')===(S.market||'SD'));
   const mStores=S.stores.filter(s=>(s.market||'SD')===(S.market||'SD'));
   mk('flBrand',[...new Set(mLaps.map(l=>l.brand))],'f-brand',v=>mLaps.filter(l=>l.brand===v).length);
@@ -1224,7 +1229,7 @@ function buildFilters(){
   mk('flRam',[...new Set(mLaps.map(l=>(parseInt(l.ram)||8)+'GB'))].sort(),'f-ram',v=>mLaps.filter(l=>(parseInt(l.ram)||8)+'GB'===v).length);
   mk('flGpu',[...new Set(mLaps.map(l=>gpuClass(l.gpu)))],'f-gpu',v=>mLaps.filter(l=>gpuClass(l.gpu)===v).length);
   mk('flUsage',[...new Set(mLaps.map(l=>l.usage))],'f-usage',v=>mLaps.filter(l=>l.usage===v).length);
-  mk('flCity',[...new Set(mStores.map(s=>s.city))],'f-city',v=>mLaps.filter(l=>storeOf(l).city===v).length);
+  mk('flCity',mkt().cities,'f-city',v=>mLaps.filter(l=>stateOf(storeOf(l).city)===v).length);document.getElementById('flCity').style.cssText='max-height:240px;overflow:auto';{const rc=document.getElementById('rCity');if(rc){const v=rc.value;rc.innerHTML=cityOpts(v,'اختر الولاية/المحافظة');}}
 }
 function checked(cls){return [...document.querySelectorAll('.'+cls+':checked')].map(x=>x.value);}
 function cpuClass(c){c=String(c||'');if(/apple|m1|m2|m3/i.test(c))return 'Apple M';if(/i3/i.test(c))return 'Intel Core i3';if(/i5/i.test(c))return 'Intel Core i5';if(/i7/i.test(c))return 'Intel Core i7';if(/i9/i.test(c))return 'Intel Core i9';if(/ryzen 3/i.test(c))return 'Ryzen 3';if(/ryzen 5/i.test(c))return 'Ryzen 5';if(/ryzen 7/i.test(c))return 'Ryzen 7';return 'أخرى';}
@@ -1249,7 +1254,7 @@ function filtered(){
     const st=storeOf(l);
     const hay=(l.brand+' '+l.model+' '+l.cpu+' '+l.ram+' '+l.ssd+' '+l.gpu+' '+l.usage).toLowerCase();
     return (st.market||'SD')===(S.market||'SD')&&(!q||hay.includes(q))&&(!br.length||br.includes(l.brand))&&(!co.length||co.includes(l.cond))
-      &&(!us.length||us.includes(l.usage))&&(!ci.length||ci.includes(st.city))
+      &&(!us.length||us.includes(l.usage))&&(!ci.length||ci.includes(stateOf(st.city)))
       &&(!cp.length||cp.includes(cpuClass(l.cpu)))&&(!rm.length||rm.includes((parseInt(l.ram)||8)+'GB'))&&(!gp.length||gp.includes(gpuClass(l.gpu)))
       &&l.price>=mn&&l.price<=mx&&(!vOnly||st.verified);
   });
@@ -2349,7 +2354,7 @@ function renderStore(){
       <p>ليش تسجل في لاب سوق؟ زبائن جادين بمواصفات وميزانيات واضحة، عروض تفاوض بتوصلك مباشرة، وتقارير ذكاء سوق بتوريك سعرك مقارنة بمتوسط سوقك لحظة بلحظة. التسجيل مجاني - عمولة متمايزة (3% جديد / 6% مستعمل مفحوص) بتتسجل بس لما تتم الصفقة فعلاً.</p>
       <div class="fgrid">
         <div><label>اسم المتجر</label><input id="gName" placeholder="متجر ..."></div>
-        <div><label>المدينة</label><input id="gCity" placeholder="${mkt().cities[0]}"></div>
+        <div><label>المدينة</label><select id="gCity">${cityOpts(null,"اختر الولاية/المحافظة")}</select></div>
         <div class="full"><label>رقم التلفون</label><input id="gPhone" placeholder="09xxxxxxxx"></div>
       </div>
       <div class="mrow"><button class="btn" onclick="registerStore()">سجّل مجاناً</button></div>
@@ -2549,7 +2554,7 @@ function csvImport(){
 }
 function registerStore(){
   const n=document.getElementById('gName').value.trim(),c=document.getElementById('gCity').value.trim(),p=document.getElementById('gPhone').value.trim();
-  if(!n||!p){toast('اكتب اسم المتجر والرقم');return;}
+  if(!n||!p){toast('اكتب اسم المتجر والرقم');return;}if(!c){toast('اختر الولاية أو المحافظة');return;}
   const code=String(Math.floor(1000+Math.random()*9000));
   S.pendingReg={n,c,p,code};
   document.getElementById('storeGate').innerHTML=`<div class="panel" style="max-width:480px;margin:40px auto">
@@ -3118,7 +3123,7 @@ window.openOrder=function(id){
   if(l.stock===0){toast('الجهاز ده نفد مؤقتاً من المتجر');return;}
   leadLap=id;orderLap=id;
   document.getElementById('leadDevLine').innerHTML='💻 <b>'+esc(l.brand+' '+l.model)+'</b> · '+fmt(l.price)+' '+cur()+' · 🏪 '+esc(storeOf(l).name)+(LS_SRC?' · المصدر: '+esc(LS_SRC):'');
-  document.getElementById('ldCity').innerHTML=(mkt().cities||[]).map(c=>'<option>'+c+'</option>').join('');
+  document.getElementById('ldCity').innerHTML=cityOpts();{const rc=document.getElementById('rCity');if(rc)rc.innerHTML=cityOpts(null,'اختر الولاية/المحافظة');}
   document.getElementById('leadStep1').style.display='';document.getElementById('leadStep2').style.display='none';document.getElementById('leadStep3').style.display='none';
   openModal('leadModal');
 };
@@ -4179,11 +4184,11 @@ function checkSeenPrice(id){
   box.textContent=d<=-30?'⚠ أرخص من وسيط المنصة بـ'+(-d)+'% - احتمال إعلان غير حقيقي، اطلب إثبات.':d<-5?'أقل من وسيط المنصة بـ'+(-d)+'%':d<=10?'قريب من وسيط المنصة (فرق '+d+'%)':'أعلى من وسيط المنصة بـ'+d+'%';
 }
 function nearbyHTML(l){
-  const mk=_mk(l),cities=MARKETS[mk].cities;if(!S.myCity||cities.indexOf(S.myCity)<0)S.myCity=null;
-  const sel='<select onchange="setMyCity(this.value,'+l.id+')" style="padding:6px 8px;border-radius:8px"><option value="">اختر مدينتك</option>'+cities.map(function(c){return '<option'+(S.myCity===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select>';
+  const mk=_mk(l),cities=MARKETS[mk].cities;if(S.myCity)S.myCity=stateOf(S.myCity);if(!S.myCity||cities.indexOf(S.myCity)<0)S.myCity=null;
+  const sel='<select onchange="setMyCity(this.value,'+l.id+')" style="padding:6px 8px;border-radius:8px"><option value="">اختر مدينتك</option>'+cities.map(function(c){return '<option value="'+c+'"'+(S.myCity===c?' selected':'')+'>'+cityLbl(c)+'</option>';}).join('')+'</select>';
   let body='<div class="meta">اختر مدينتك عشان نوريك المتاح قريب منك.</div>';
   if(S.myCity){
-    const inCity=S.laptops.filter(function(x){return x.stock!==0&&_mk(x)===mk&&(storeOf(x)||{}).city===S.myCity&&(x.id===l.id||(x.brand===l.brand&&x.model===l.model)||(x.cpu===l.cpu&&x.ram===l.ram&&x.cond===l.cond));});
+    const inCity=S.laptops.filter(function(x){return x.stock!==0&&_mk(x)===mk&&stateOf((storeOf(x)||{}).city)===S.myCity&&(x.id===l.id||(x.brand===l.brand&&x.model===l.model)||(x.cpu===l.cpu&&x.ram===l.ram&&x.cond===l.cond));});
     if(inCity.length)body=inCity.map(function(x){const s=storeOf(x);return '<div class="meta">📍 <b>'+esc(s.name)+'</b> - '+esc(x.brand+' '+x.model)+' · '+fmt(x.price)+' '+cur()+' · '+(x.stock?x.stock+' متوفر':'متوفر')+(x.id===l.id?' (نفس الجهاز)':'')+'</div>';}).join('');
     else{const other={};S.laptops.filter(function(x){return x.stock!==0&&_mk(x)===mk&&(x.id===l.id||(x.brand===l.brand&&x.model===l.model));}).forEach(function(x){const c=(storeOf(x)||{}).city;other[c]=(other[c]||0)+1;});
       const ks=Object.keys(other);body='<div class="meta" style="color:#d97706">ما في نفس الجهاز أو مشابه متوفر في '+esc(S.myCity)+'.'+(ks.length?' متوفر في: '+ks.map(function(k){return esc(k)+' ('+other[k]+')';}).join('، ')+' (الشحن بين المدن حسب اتفاقك مع المتجر).':'')+'</div>';}
