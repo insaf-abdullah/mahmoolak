@@ -4424,7 +4424,7 @@ function i18nAudit(){
 /* ---------- v22: bridge to import local demo data from the old tiiny origin into the GitHub Pages origin (KEY unchanged, additive merge) ---------- */
 (function(){
   var OLD='https://labsouq.tiiny.site', NEW='https://insaf-abdullah.github.io';
-  var LISTS=['orders','requests','leads','claims','wclaims','disputes','negs','stockAlerts','tradeins','reviews','users','activity','clicks','growth','compare'];
+  var LISTS=['orders','requests','leads','claims','wclaims','disputes','negs','stockAlerts','tradeins','reviews','users','compare'];
   var NUMS=['nextOrder','nextReq','nextOfferId','leadSeq','disputeSeq','reviewSeq','tradeinSeq','wclaimSeq','nextUser'];
   var COUNT=['orders','requests','leads','stockAlerts','wclaims','negs'];
   /* sender side: runs on any origin, answers only the new origin, returns only the saved state */
@@ -4433,14 +4433,14 @@ function i18nAudit(){
     try{ev.source.postMessage({t:'ls-data',raw:localStorage.getItem(KEY)||''},ev.origin);}catch(e){}
   });
   if(location.origin!==NEW)return;
-  function idOf(x){return x&&typeof x==='object'?(x.id!=null?'i'+x.id:(x.code!=null?'c'+x.code:JSON.stringify(x))):JSON.stringify(x);}
+  function idOf(x,k){if(k==='leads'&&x&&typeof x==='object')return 'L'+x.name+'|'+(x.lapId!=null?x.lapId:(x.laptopId!=null?x.laptopId:x.lap))+'|'+(x.source||'');return x&&typeof x==='object'?(x.id!=null?'i'+x.id:(x.code!=null?'c'+x.code:JSON.stringify(x))):JSON.stringify(x);}
   function mergeIn(src){
     var added=0;
     LISTS.forEach(function(k){
       if(!Array.isArray(src[k]))return;
       if(!Array.isArray(S[k]))S[k]=[];
-      var have={};S[k].forEach(function(x){have[idOf(x)]=1;});
-      src[k].forEach(function(x){if(!have[idOf(x)]){S[k].push(x);have[idOf(x)]=1;added++;}});
+      var have={};S[k].forEach(function(x){have[idOf(x,k)]=1;});
+      src[k].forEach(function(x){var q=idOf(x,k);if(!have[q]){S[k].push(x);have[q]=1;added++;}});
     });
     NUMS.forEach(function(k){if(typeof src[k]==='number')S[k]=Math.max(+S[k]||0,src[k]);});
     save();return added;
