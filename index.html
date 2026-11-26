@@ -5204,5 +5204,58 @@ html[dir=ltr] .hmenuD #themeBtn::after,html[lang=en] .hmenuD #themeBtn::after{co
 </style>
 
 <style id="v38css">.hero-art{max-height:none!important;display:block!important}@media(max-width:860px){.hero-art{max-height:none!important;display:block!important}}</style>
-</body>
+<script id="v40auth">
+/* v40: admin login by magic link (default Supabase email has a link, no 6-digit code) */
+(function(){
+  function redirectUrl(){return location.origin+location.pathname+'?adm=1';}
+  window.adminSendOtp=async function(){
+    if(!supa){toast('السيرفر ما متاح حالياً');return;}
+    const e=document.getElementById('alOtpEmail').value.trim().toLowerCase();
+    if(!e||e.indexOf('@')<0){toast('اكتب إيميل صحيح');return;}
+    const r=await supa.auth.signInWithOtp({email:e,options:{shouldCreateUser:true,emailRedirectTo:redirectUrl()}});
+    if(r.error){toast('❌ '+r.error.message);return;}
+    document.getElementById('alOtpCodeRow').style.display='block';
+    document.getElementById('alOtpVerify').style.display='';
+    toast('📧 اتبعت لإيميلك رابط دخول. افتحه من نفس المتصفح. (لو وصلك كود من 6 أرقام اكتبه هنا)');
+  };
+  async function finish(user){
+    const e=(user.email||'').toLowerCase();let role=null;
+    try{
+      const pr=await supa.from('profiles').select('role').eq('id',user.id).maybeSingle();
+      role=pr.data&&pr.data.role;
+      if(e===OWNER_EMAIL&&role!=='owner'){
+        if(!pr.data){await supa.from('profiles').insert({id:user.id,role:'owner',display_name:'مالك المنصة'});}
+        else{await supa.from('profiles').update({role:'owner'}).eq('id',user.id);}
+        role='owner';
+      }
+    }catch(_){}
+    if(!role||role==='buyer'){toast('🚫 الإيميل دا ما عنده صلاحية إدارة');try{await supa.auth.signOut();}catch(_){}supaUser=null;supaRole=null;return 'denied';}
+    supaUser=user;supaRole=role;
+    const roleAr={owner:'مالك',moderator:'مشرف',support:'دعم'}[role]||'دعم';
+    if(!(S.admins||[]).find(a=>a.email===e)){S.admins.push({id:S.nextAdmin++,name:e.split('@')[0],phone:'',role:roleAr,email:e});S.activeAdminId=S.nextAdmin-1;}
+    else{S.activeAdminId=S.admins.find(a=>a.email===e).id;}
+    S.adminOk=true;save();
+    try{closeModal('adminLoginModal');}catch(_){}
+    setRole('admin');
+    cloudAudit('admin.login','profiles',user.id,{email:e,role:role,via:'link'});
+    toast('✅ دخول الإدارة ('+roleAr+')');
+    return 'ok';
+  }
+  window.__adminFinish=finish;
+  if(/[?&]adm=1/.test(location.search)){
+    (async function(){
+      for(let i=0;i<40;i++){
+        if(typeof supa!=='undefined'&&supa){
+          try{const r=await supa.auth.getSession();if(r.data&&r.data.session){
+            window.__admResult=await finish(r.data.session.user);
+            try{history.replaceState(null,'',location.pathname);}catch(_){}
+            return;}}catch(_){}
+        }
+        await new Promise(r=>setTimeout(r,500));
+      }
+      window.__admResult='nosession';toast('⚠️ الرابط انتهت صلاحيته أو اتفتح من متصفح تاني. اطلب رابط جديد.');
+    })();
+  }
+})();
+</script></body>
 </html>
