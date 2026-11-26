@@ -5088,5 +5088,52 @@ body.dark #artAdmin .pill.pub{background:#14532d;color:#dcfce7}body.dark #artAdm
 })();
 </script>
 
+
+<style id="v30bcss">
+.filters .fgroup.fhide{display:none!important}
+.fstep{display:flex;align-items:center;gap:8px;margin:8px 0 10px;flex-wrap:wrap}
+.fstep .fprog{flex:1 0 100%;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.fstep .fprog i{display:block;height:100%;background:var(--acc);transition:width .2s}
+.fstep .fcnt{font-size:12px;font-weight:800;color:var(--muted);flex:1}
+.fstep button{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:20px;padding:8px 16px;font:800 13px inherit;font-family:inherit;cursor:pointer}
+.fstep button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.fstep button:disabled{opacity:.4;cursor:default}
+.filters .fgroup{margin-bottom:6px}
+.filters .fgroup .opts,.filters .fgroup>div:last-child{max-height:none}
+</style>
+<script id="v30bjs">
+(function(){
+  var F=document.querySelector('.filters');if(!F)return;
+  var idx=0,busy=false;
+  function groups(){return [].slice.call(F.querySelectorAll(':scope>.fgroup'))}
+  function titleOf(g){var t=g.querySelector('label,b,strong,h4,.ft');return t?t.textContent.trim():''}
+  function apply(){
+    if(busy)return;busy=true;
+    var gs=groups();if(!gs.length){busy=false;return}
+    if(idx>=gs.length)idx=gs.length-1;
+    gs.forEach(function(g,i){g.classList.toggle('fhide',i!==idx)});
+    var bar=F.querySelector('.fstep');
+    if(!bar){bar=document.createElement('div');bar.className='fstep';
+      bar.innerHTML='<div class="fprog"><i></i></div><span class="fcnt"></span><button type="button" data-a="back">رجوع</button><button type="button" class="pri" data-a="next">التالي</button>';
+      var h=F.querySelector('h3');if(h&&h.nextSibling)F.insertBefore(bar,h.nextSibling);else F.insertBefore(bar,F.firstChild);
+      bar.addEventListener('click',function(e){var a=e.target.getAttribute&&e.target.getAttribute('data-a');if(!a)return;
+        var n=groups().length;if(a==='next'&&idx<n-1)idx++;else if(a==='next'){var r=document.getElementById('grid')||document.querySelector('.lcard');if(r&&r.scrollIntoView)r.scrollIntoView({behavior:'smooth',block:'start'});}
+        if(a==='back'&&idx>0)idx--;apply();});
+    }
+    bar.querySelector('.fprog i').style.width=((idx+1)/gs.length*100)+'%';
+    bar.querySelector('.fcnt').textContent='الخطوة '+(idx+1)+' من '+gs.length;
+    bar.querySelector('[data-a=back]').disabled=idx===0;
+    bar.querySelector('[data-a=next]').textContent=idx===gs.length-1?'اعرض النتائج':'التالي';
+    busy=false;
+  }
+  new MutationObserver(function(){apply()}).observe(F,{childList:true});
+  apply();
+  // mobile: fewer top links, rest under "المزيد"
+  try{var w=document.querySelector('#buyer .nav .moreWrap');
+    if(w&&innerWidth<=640){var m=w.querySelector('.moreMenu'),nav=w.parentNode;
+      var ls=[].slice.call(nav.children).filter(function(e){return e.tagName==='A'});
+      ls.slice(3).reverse().forEach(function(a){m.insertBefore(a,m.firstChild)});}}catch(e){}
+})();
+</script>
 </body>
 </html>
