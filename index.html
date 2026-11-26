@@ -5164,17 +5164,30 @@ body.dark #artAdmin .pill.pub{background:#14532d;color:#dcfce7}body.dark #artAdm
   var cb=w.querySelector('.cmp-btn:not(#themeBtn):not(#langBtn):not(#accBtn)');
   var items=[cb,document.getElementById('themeBtn'),document.getElementById('langBtn'),document.getElementById('accBtn')].filter(Boolean);
   var W=document.createElement('div');W.className='hmenuW';
-  var B=document.createElement('button');B.type='button';B.className='hmenuB';B.setAttribute('aria-label','القائمة');B.setAttribute('aria-expanded','false');B.innerHTML='☰';
+  var B=document.createElement('button');B.type='button';B.className='hmenuB';B.setAttribute('aria-label','القائمة');B.setAttribute('aria-expanded','false');B.innerHTML='<span class="hmI">☰</span><span class="hmL">القائمة</span>';
   var D=document.createElement('div');D.className='hmenuD';
   W.appendChild(B);W.appendChild(D);
   var ph=items.map(function(e){var p=document.createComment('h');e.parentNode.insertBefore(p,e);return p});
   function place(){var m=matchMedia('(max-width:640px)').matches;
     items.forEach(function(e,i){if(m){if(e.parentNode!==D)D.appendChild(e)}else if(e.parentNode===D&&ph[i].parentNode){ph[i].parentNode.insertBefore(e,ph[i].nextSibling)}});
     if(m&&!W.parentNode)w.appendChild(W);}
-  B.addEventListener('click',function(e){e.stopPropagation();var o=W.classList.toggle('open');B.setAttribute('aria-expanded',o)});
+  B.addEventListener('click',function(e){e.stopPropagation();var o=W.classList.toggle('open');B.setAttribute('aria-expanded',o);if(o){var r=B.getBoundingClientRect();D.style.top=(r.bottom+6)+'px'}});window.addEventListener('scroll',function(){W.classList.remove('open')},{passive:true});
   document.addEventListener('click',function(e){if(!W.contains(e.target)||(e.target.closest&&e.target.closest('#themeBtn,#langBtn')==null&&e.target.closest('.cmp-btn')&&false)){}if(!W.contains(e.target)){W.classList.remove('open');B.setAttribute('aria-expanded','false')}});
   w.appendChild(W);place();matchMedia('(max-width:640px)').addEventListener('change',place);
 })();
 </script>
+
+<style id="v30dcss">
+.hmenuB{width:auto!important;min-width:54px;height:46px!important;padding:2px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.hmenuB .hmI{font-size:18px}.hmenuB .hmL{font-size:10px;font-weight:800;margin-top:1px}
+@media(max-width:640px){
+ .hmenuD{position:fixed!important;left:10px!important;right:10px!important;inset-inline-end:10px!important;inset-inline-start:10px!important;width:auto!important;min-width:0!important;max-height:70vh;overflow:auto;z-index:200}
+ .hmenuD .cmp-btn{display:flex!important;align-items:center;justify-content:flex-start;width:100%!important;padding:12px 14px!important;font-size:14px!important;color:var(--txt)!important;background:var(--bg)!important;white-space:nowrap}
+ .hwrap .logo small{display:none!important}
+ .hwrap>.role button{padding:7px 8px!important}
+ .toast{top:auto!important;bottom:86px!important;transform:translateX(50%) translateY(20px)!important}
+ .toast.on{transform:translateX(50%) translateY(0)!important}
+}
+</style>
 </body>
 </html>
