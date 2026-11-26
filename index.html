@@ -4612,5 +4612,66 @@ function i18nAudit(){
   window.__i18n27=true;
 })();
 </script>
+<style id="v28css">
+/* v28: unified card photos, toast on top, compact nav, mobile hero */
+.lcard .img{height:176px;background:linear-gradient(135deg,#e9ecfb,#dfe3f7)}
+body.dark .lcard .img{background:linear-gradient(135deg,#182242,#101a33)}
+.lcard .img img{object-fit:cover;object-position:center;filter:saturate(.92) contrast(1.02)}
+.lcard .img::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(79,70,229,.10),rgba(15,23,42,.14));mix-blend-mode:multiply}
+.lcard .img .cmp,.lcard .img .dealbadge{z-index:3}
+.toast{bottom:auto;top:84px;transform:translateX(50%) translateY(-24px);max-width:calc(100vw - 32px);text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.toast.on{transform:translateX(50%) translateY(0)}
+.nav{position:relative;align-items:center}
+.nav .moreWrap{position:relative;flex:0 0 auto}
+.nav .moreBtn{background:var(--card);border:1px solid var(--line);padding:8px 16px;border-radius:20px;font-size:12px;font-weight:800;color:var(--txt);cursor:pointer;font-family:inherit}
+.nav .moreBtn:hover,.nav .moreWrap.open .moreBtn{border-color:var(--acc);color:var(--acc)}
+.nav .moreMenu{display:none;position:absolute;top:calc(100% + 6px);inset-inline-start:0;min-width:170px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;z-index:60;flex-direction:column;gap:2px}
+.nav .moreWrap.open .moreMenu{display:flex}
+.nav .moreMenu a{border:0;border-radius:10px;padding:10px 12px;background:transparent;white-space:nowrap}
+.nav .moreMenu a:hover{background:var(--bg)}
+.hero-art .hsvg{width:100%;height:auto;display:block;filter:drop-shadow(0 14px 26px rgba(0,0,0,.28))}
+@media(max-width:640px){
+ .nav{flex-wrap:wrap!important;overflow:visible!important}
+ .hero{padding:18px 16px}
+ .hero h1{font-size:24px}
+ .hero-art{width:100%;max-height:150px;display:flex;justify-content:center}
+ .hero-art .hsvg{max-height:150px;width:auto}
+ .toast{top:76px}
+}
+</style>
+<script id="v28js">
+(function(){
+  if(typeof I18N!=='undefined')I18N['⋯ المزيد']='⋯ More';
+  // hero art: original illustration instead of the stock photo
+  var art=document.querySelector('.hero-art');
+  if(art){art.innerHTML='<svg class="hsvg" viewBox="0 0 420 260" role="img" aria-label="LabSouq"><defs><linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset="1" stop-color="#8657F3"/></linearGradient><linearGradient id="hg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1b4b"/><stop offset="1" stop-color="#312e81"/></linearGradient></defs>'
+  +'<g opacity=".55"><rect x="18" y="86" width="132" height="86" rx="9" fill="#ffffff" fill-opacity=".16" stroke="#fff" stroke-opacity=".45"/><rect x="6" y="174" width="156" height="9" rx="4.5" fill="#fff" fill-opacity=".3"/></g>'
+  +'<g opacity=".55"><rect x="270" y="86" width="132" height="86" rx="9" fill="#ffffff" fill-opacity=".16" stroke="#fff" stroke-opacity=".45"/><rect x="258" y="174" width="156" height="9" rx="4.5" fill="#fff" fill-opacity=".3"/></g>'
+  +'<rect x="108" y="30" width="204" height="132" rx="12" fill="url(#hg2)" stroke="#fff" stroke-opacity=".85" stroke-width="3"/>'
+  +'<rect x="124" y="46" width="172" height="100" rx="6" fill="#fff" fill-opacity=".07"/>'
+  +'<rect x="136" y="58" width="70" height="8" rx="4" fill="#fff" fill-opacity=".85"/><rect x="136" y="74" width="104" height="6" rx="3" fill="#fff" fill-opacity=".4"/><rect x="136" y="88" width="88" height="6" rx="3" fill="#fff" fill-opacity=".4"/>'
+  +'<rect x="136" y="108" width="62" height="24" rx="8" fill="url(#hg1)"/><text x="167" y="125" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="Cairo,sans-serif">SDG · EGP</text>'
+  +'<path d="M96 168h228l10 16H86z" fill="#fff" fill-opacity=".9"/><rect x="170" y="171" width="80" height="5" rx="2.5" fill="#8657F3" fill-opacity=".5"/>'
+  +'<g transform="translate(262 40)"><circle r="22" fill="#16a34a" stroke="#fff" stroke-width="3"/><path d="M-9 1l6 7 12-14" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></g>'
+  +'<g transform="translate(70 62)"><rect x="-26" y="-13" width="52" height="26" rx="13" fill="#fff"/><text x="0" y="5" text-anchor="middle" font-size="12" font-weight="800" fill="#312e81" font-family="Cairo,sans-serif">⚖️ vs</text></g>'
+  +'<g transform="translate(350 62)"><rect x="-28" y="-13" width="56" height="26" rx="13" fill="#fff"/><text x="0" y="5" text-anchor="middle" font-size="12" font-weight="800" fill="#312e81" font-family="Cairo,sans-serif">🛡️ ✓</text></g>'
+  +'</svg>';}
+  // compact nav: first 5 links stay, the rest go under "More"
+  var nav=document.querySelector('#buyer .nav');
+  if(nav&&!nav.querySelector('.moreWrap')){
+    var links=[].slice.call(nav.children).filter(function(e){return e.tagName==='A'});
+    if(links.length>6){
+      var w=document.createElement('div');w.className='moreWrap';
+      var b=document.createElement('button');b.type='button';b.className='moreBtn';b.textContent='⋯ المزيد';b.setAttribute('aria-haspopup','true');b.setAttribute('aria-expanded','false');
+      var m=document.createElement('div');m.className='moreMenu';
+      links.slice(5).forEach(function(a){m.appendChild(a)});
+      w.appendChild(b);w.appendChild(m);nav.appendChild(w);
+      b.addEventListener('click',function(e){e.stopPropagation();var o=w.classList.toggle('open');b.setAttribute('aria-expanded',o)});
+      document.addEventListener('click',function(e){if(!w.contains(e.target)||(e.target.closest&&e.target.closest('.moreMenu a'))){w.classList.remove('open');b.setAttribute('aria-expanded','false')}});
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
