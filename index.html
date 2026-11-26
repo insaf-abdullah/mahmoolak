@@ -566,6 +566,11 @@ body.dark .mini.ghost,body.dark .btn.ghost{color:#e6eaf5}
         <div class="fgrid">
           <div><label>اللوقو (إيموجي)</label><input id="cuLogo" placeholder="مثال: 🖥️"></div>
           <div><label>أو رابط صورة اللوقو</label><input id="cuLogoImg" placeholder="https://... (اختياري)"></div>
+          <div style="grid-column:1/-1"><label>⬆️ ارفع لوقو متجرك (صورة فقط)</label>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><input type="file" id="cuLogoFile" accept="image/png,image/jpeg,image/webp" onchange="uploadStoreLogo(this)" style="flex:1;min-width:180px">
+            <img id="cuLogoPrev" alt="" style="display:none;width:48px;height:48px;border-radius:12px;object-fit:cover;border:1px solid var(--line)">
+            <button type="button" class="mini danger" onclick="clearStoreLogo()">إزالة</button></div>
+            <div class="meta" style="font-size:11px;margin-top:4px">PNG أو JPG أو WebP. بيتصغّر تلقائي (512px) ويتحفظ في متصفحك مع بيانات المتجر.</div></div>
           <div><label>لون المتجر</label><input id="cuColor" type="color" class="colorpick"></div>
           <div><label>ساعات العمل</label><input id="cuHours" placeholder="السبت - الخميس: 9ص - 10م"></div>
           <div class="full"><label>نبذة عن المتجر</label><textarea id="cuDesc" rows="2" placeholder="متجر متخصص في ..."></textarea></div>
@@ -1624,6 +1629,22 @@ function fillBrandingForm(me){
   const list=document.getElementById('cuAlbList');
   if(list)list.innerHTML=(me.album||[]).map((u,i)=>`<div class="alb-item"><img src="${esc(u)}" alt=""><span class="meta" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u)}</span><button class="mini danger" onclick="delAlbumUrl(${i})">حذف</button></div>`).join('')||'<span class="meta">لا صور بعد - ضيف أول صورة لمتجرك.</span>';
 }
+function uploadStoreLogo(inp){
+  const f=inp.files&&inp.files[0];if(!f)return;
+  if(!/^image\/(png|jpe?g|webp)$/.test(f.type)){toast('⚠️ صور PNG أو JPG أو WebP بس');inp.value='';return}
+  if(f.size>8*1024*1024){toast('⚠️ الصورة كبيرة (أقصى 8MB)');inp.value='';return}
+  const img=new Image(),u=URL.createObjectURL(f);
+  img.onload=()=>{const m=512,r=Math.min(1,m/Math.max(img.width,img.height)),w=Math.round(img.width*r),h=Math.round(img.height*r);
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);
+    let d=c.toDataURL('image/webp',.85);if(d.indexOf('image/webp')<0)d=c.toDataURL('image/png');
+    URL.revokeObjectURL(u);
+    if(d.length>400000){d=c.toDataURL('image/jpeg',.8)}
+    document.getElementById('cuLogoImg').value=d;
+    const p=document.getElementById('cuLogoPrev');p.src=d;p.style.display='';
+    toast('✅ اتجهز اللوقو ('+Math.round(d.length*0.75/1024)+'KB) - دوس احفظ الهوية')};
+  img.onerror=()=>{toast('⚠️ ما قدرت أقرا الصورة')};img.src=u;
+}
+function clearStoreLogo(){document.getElementById('cuLogoImg').value='';document.getElementById('cuLogoFile').value='';const p=document.getElementById('cuLogoPrev');p.style.display='none';p.removeAttribute('src')}
 function saveStoreBranding(){
   const me=S.stores.find(s=>s.id===S.currentStoreId);if(!me)return;
   me.logo=document.getElementById('cuLogo').value.trim()||'🏪';
