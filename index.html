@@ -5202,5 +5202,55 @@ html[dir=ltr] .hmenuD #themeBtn::after,html[lang=en] .hmenuD #themeBtn::after{co
  #buyer .nav>a,#buyer .nav .moreBtn{padding:6px 8px!important;font-size:11.5px!important}
 }
 </style>
+
+<style id="v36css">
+.hero-art{max-height:none!important;width:100%}
+.hx{container-type:inline-size;position:relative;width:100%;max-width:480px;margin:0 auto;aspect-ratio:46/31;direction:ltr}
+.hx *{box-sizing:border-box}
+.hx-in{position:absolute;inset:0;font-size:2.17cqw;line-height:1.2}
+@supports not (font-size:1cqw){.hx-in{font-size:10px}}
+.hx-glow{position:absolute;left:6em;top:3em;width:34em;height:24em;border-radius:50%;background:radial-gradient(closest-side,var(--acc),transparent 72%);opacity:.55;filter:blur(1.6em)}
+.hx-ring{position:absolute;left:3em;top:1em;width:40em;height:28em;border-radius:50%;border:1px dashed rgba(255,255,255,.28);opacity:.7}
+.hx-lap{position:absolute;left:6.5em;top:4em;width:32em;transform:perspective(90em) rotateY(-8deg) rotateX(3deg);transform-origin:50% 100%}
+.hx-scr{height:20em;border-radius:1.5em 1.5em .6em .6em;background:linear-gradient(160deg,#171a35,#0c0e22);border:.45em solid #d8dbee;box-shadow:0 2em 4em rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.08);padding:1em;overflow:hidden;position:relative}
+.hx-scr::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.14),transparent 38%);pointer-events:none}
+.hx-bar{display:flex;align-items:center;gap:.5em;height:2.2em}
+.hx-bar i{width:.7em;height:.7em;border-radius:50%;background:#ff6b6b}
+.hx-bar i:nth-child(2){background:#ffd166}.hx-bar i:nth-child(3){background:#4ade80}
+.hx-bar b{margin-inline-start:auto;color:#fff;font:800 1.2em/1 Cairo,sans-serif;direction:rtl}
+.hx-bar s{display:block;width:7em;height:1.5em;border-radius:1em;background:rgba(255,255,255,.12);text-decoration:none}
+.hx-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8em;margin-top:.8em}
+.hx-c{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:.9em;padding:.6em}
+.hx-img{height:6.2em;border-radius:.6em;background:linear-gradient(145deg,var(--acc),#1b1f4a);display:flex;align-items:center;justify-content:center;position:relative}
+.hx-img svg{width:70%;height:auto}
+.hx-img em{position:absolute;top:.4em;inset-inline-start:.4em;background:#16a34a;color:#fff;font:800 .85em/1 Cairo,sans-serif;padding:.25em .5em;border-radius:1em;font-style:normal}
+.hx-l{height:.7em;border-radius:.4em;background:rgba(255,255,255,.4);margin-top:.6em;width:80%}
+.hx-l2{height:.55em;border-radius:.4em;background:rgba(255,255,255,.18);margin-top:.4em;width:55%}
+.hx-p{margin-top:.6em;height:1.5em;border-radius:1em;background:var(--acc);width:60%}
+.hx-base{height:1.5em;width:36em;margin:-.05em 0 0 -2em;border-radius:0 0 2em 2em;background:linear-gradient(#eceefa,#a9aecb);box-shadow:0 1.2em 2em rgba(0,0,0,.4);position:relative}
+.hx-base::after{content:"";position:absolute;left:50%;top:0;width:8em;height:.5em;margin-left:-4em;border-radius:0 0 1em 1em;background:#8f94b3}
+.hx-ch{position:absolute;display:flex;align-items:center;gap:.5em;background:var(--card);color:var(--txt);border:1px solid var(--line);border-radius:2em;padding:.5em .85em;font:800 1.75em/1.1 Cairo,sans-serif;box-shadow:0 1em 2.4em rgba(0,0,0,.35);white-space:nowrap;direction:rtl;animation:hxf 5s ease-in-out infinite}
+.hx-ch small{font-size:.62em;opacity:.7;font-weight:700;display:block}
+.hx-ch .d{width:.9em;height:.9em;border-radius:50%;background:#22c55e;box-shadow:0 0 0 .3em rgba(34,197,94,.25)}
+.hx-ch .ok{width:1.5em;height:1.5em;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9em}
+.hx-c1{left:0;top:.5em}.hx-c2{right:0;top:9.5em;animation-delay:-1.2s}.hx-c3{left:0;bottom:3em;animation-delay:-2.4s}.hx-c4{right:1em;bottom:-.2em;animation-delay:-3.6s}
+@keyframes hxf{0%,100%{transform:translateY(0)}50%{transform:translateY(-.9em)}}
+@media(prefers-reduced-motion:reduce){.hx-ch{animation:none}}
+@media(max-width:430px){.hx-c3 small{display:none}}
+</style>
+<script id="v36js">
+(function(){
+  var art=document.querySelector('.hero-art');if(!art||art.querySelector('.hx'))return;
+  var lap='<svg viewBox="0 0 120 80" aria-hidden="true"><rect x="22" y="8" width="76" height="50" rx="5" fill="#0c0e22" stroke="#fff" stroke-opacity=".8" stroke-width="3"/><rect x="29" y="15" width="62" height="36" rx="2" fill="#fff" fill-opacity=".12"/><path d="M12 62h96l5 9H7z" fill="#fff" fill-opacity=".9"/></svg>';
+  var card=function(b){return '<div class="hx-c"><div class="hx-img">'+lap+(b?'<em>✓</em>':'')+'</div><div class="hx-l"></div><div class="hx-l2"></div><div class="hx-p"></div></div>'};
+  art.innerHTML='<div class="hx" role="img" aria-label="'+(document.documentElement.lang==='en'?'Laptop marketplace preview':'معاينة للسوق: لابتوبات بأسعار ومواصفات من متاجر موثقة')+'"><div class="hx-in"><div class="hx-glow"></div><div class="hx-ring"></div>'
+   +'<div class="hx-lap"><div class="hx-scr"><div class="hx-bar"><i></i><i></i><i></i><b>محمولك</b><s></s></div><div class="hx-cards">'+card(1)+card(0)+card(1)+'</div></div><div class="hx-base"></div></div>'
+   +'<div class="hx-ch hx-c1"><span class="ok">✓</span><span>متجر موثّق</span></div>'
+   +'<div class="hx-ch hx-c2"><span>i7 · 16GB · 512 SSD</span></div>'
+   +'<div class="hx-ch hx-c3"><span>1,450,000 ج.س<small>سعر توضيحي</small></span></div>'
+   +'<div class="hx-ch hx-c4"><span class="d"></span><span>متوفر الآن</span></div>'
+   +'</div></div>';
+})();
+</script>
 </body>
 </html>
