@@ -5257,5 +5257,107 @@ html[dir=ltr] .hmenuD #themeBtn::after,html[lang=en] .hmenuD #themeBtn::after{co
     })();
   }
 })();
-</script></body>
+</script><script id="v41ux">
+/* v41: seller UX (device photos, direct registration, phone check) + demo-store badges */
+(function(){
+  /* safe save: never throw on a full localStorage */
+  var _save=window.save;
+  window.save=function(){try{_save();return true;}catch(e){try{toast('⚠️ مساحة جهازك امتلأت - احذف صور قديمة أو قلل عدد الصور');}catch(_){}return false;}};
+
+  /* ---- 1) photos from the device, compressed in the browser ---- */
+  function compress(file,max,q){return new Promise(function(res,rej){
+    var fr=new FileReader();fr.onerror=function(){rej(new Error('read'));};
+    fr.onload=function(){var im=new Image();im.onerror=function(){rej(new Error('img'));};
+      im.onload=function(){var s=Math.min(1,max/Math.max(im.width,im.height));var c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q));};
+      im.src=fr.result;};
+    fr.readAsDataURL(file);});}
+  function addPicker(id){
+    var inp=document.getElementById(id);if(!inp||inp.dataset.v41)return;inp.dataset.v41='1';
+    var wrap=document.createElement('div');wrap.style.cssText='display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap';
+    var f=document.createElement('input');f.type='file';f.accept='image/jpeg,image/png,image/webp';f.style.display='none';
+    var b=document.createElement('button');b.type='button';b.className='mini';b.textContent='📷 اختر صورة من جهازك';
+    var th=document.createElement('img');th.style.cssText='width:44px;height:34px;object-fit:cover;border-radius:6px;display:none';th.alt='';
+    var msg=document.createElement('span');msg.className='meta';msg.style.fontSize='11px';
+    b.addEventListener('click',function(){f.click();});
+    f.addEventListener('change',function(){
+      var file=f.files&&f.files[0];if(!file)return;
+      if(!/^image\/(jpeg|png|webp)$/.test(file.type)){toast('الصورة لازم تكون JPG أو PNG أو WebP');f.value='';return;}
+      if(file.size>12*1024*1024){toast('الصورة كبيرة جداً (أكتر من 12MB)');f.value='';return;}
+      msg.textContent='جاري تصغير الصورة...';
+      compress(file,900,0.72).then(function(d){inp.value=d;th.src=d;th.style.display='';msg.textContent='✓ اتجهزت ('+Math.round(d.length*0.75/1024)+' KB)';})
+      .catch(function(){msg.textContent='';toast('ما قدرت أقرا الصورة - جرّب صورة تانية');});
+    });
+    wrap.appendChild(b);wrap.appendChild(th);wrap.appendChild(msg);wrap.appendChild(f);
+    inp.insertAdjacentElement('afterend',wrap);
+    inp.placeholder='أو الصق رابط صورة https://...';
+  }
+  ['aImg','aImg2','aImg3','aImg4','aImgDated'].forEach(addPicker);
+  /* the pasted-data field would be huge: keep it readable */
+  var _add=window.addLaptop;
+  window.addLaptop=function(){
+    var ok=false;try{ok=(typeof S!=='undefined');}catch(_){}
+    var before=ok?S.laptops.length:0;_add();
+    if(ok&&S.laptops.length>before){['aImg','aImg2','aImg3','aImg4','aImgDated'].forEach(function(i){var w=document.getElementById(i);if(w&&w.nextElementSibling){var im=w.nextElementSibling.querySelector('img');if(im){im.style.display='none';im.removeAttribute('src');}var sp=w.nextElementSibling.querySelector('span');if(sp)sp.textContent='';}});}
+  };
+
+  /* ---- 1b) phone check for Sudan (+249) and Egypt (+20) ---- */
+  function normPhone(p){
+    var d=String(p||'').replace(/[\s\-().]/g,'').replace(/[٠-٩]/g,function(x){return '٠١٢٣٤٥٦٧٨٩'.indexOf(x);});
+    if(/^(\+|00)249/.test(d))d='0'+d.replace(/^(\+|00)249/,'');
+    else if(/^(\+|00)20/.test(d))d='0'+d.replace(/^(\+|00)20/,'');
+    if(/^0[19]\d{8}$/.test(d))return d;      /* Sudan: 09x / 01x + 8 digits */
+    if(/^01[0125]\d{8}$/.test(d))return d;   /* Egypt mobile */
+    return null;
+  }
+  window.normPhoneV41=normPhone;
+
+  /* ---- 1c) store registration without the fake on-screen code ---- */
+  window.registerStore=function(){
+    var n=document.getElementById('gName').value.trim(),c=document.getElementById('gCity').value.trim(),p=document.getElementById('gPhone').value.trim();
+    if(n.length<2){toast('اكتب اسم المتجر');return;}
+    if(!c){toast('اختر الولاية أو المحافظة');return;}
+    var ph=normPhone(p);
+    if(!ph){toast('الرقم ما صحيح. سوداني: 09xxxxxxxx أو 01xxxxxxxx. مصري: 01xxxxxxxxx');return;}
+    S.pendingReg={n:n,c:c,p:ph,code:'x'};
+    var h=document.createElement('input');h.id='gCode';h.value='x';h.type='hidden';document.body.appendChild(h);
+    try{confirmStoreReg();}finally{h.remove();}
+    toast('✅ اتسجل متجرك. حالتك: قيد التوثيق لحد ما الإدارة تراجعه');
+  };
+
+  /* ---- 2) honest badges for the built-in demo stores ---- */
+  var DEMO_PREFIX='a0000000-0000-4000-8000-';
+  function isDemoStore(s){if(!s)return false;if(s._uuid)return String(s._uuid).indexOf(DEMO_PREFIX)===0;return s.id<=5;}
+  function isDemoLap(l){var s=S.stores.find(function(x){return x.id===l.storeId;});return isDemoStore(s);}
+  var css=document.createElement('style');css.textContent='.demoTag{position:absolute;bottom:8px;left:8px;z-index:3;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:999px;padding:2px 9px;font-size:11px;font-weight:800;pointer-events:none}#demoNote{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:12px;padding:9px 12px;font-size:12.5px;font-weight:700;margin:0 0 12px;line-height:1.7}';
+  document.head.appendChild(css);
+  function decorate(){
+    try{
+      document.querySelectorAll('.img[onclick^="openDetail("]').forEach(function(el){
+        if(el.querySelector('.demoTag'))return;
+        var m=el.getAttribute('onclick').match(/openDetail\((\d+)\)/);if(!m)return;
+        var l=S.laptops.find(function(x){return x.id===+m[1];});if(!l||!isDemoLap(l))return;
+        if(getComputedStyle(el).position==='static')el.style.position='relative';
+        var t=document.createElement('span');t.className='demoTag';t.textContent='نموذج تجريبي';el.appendChild(t);
+      });
+      var hero=document.querySelector('.hero');
+      var any=S.laptops.some(isDemoLap);
+      var note=document.getElementById('demoNote');
+      if(any&&hero&&!note){note=document.createElement('div');note.id='demoNote';note.textContent='محمولك في مرحلة التجربة: الأجهزة والمتاجر اللي فيها وسم "نموذج تجريبي" للعرض بس، ومش للشراء. المتاجر الحقيقية بتنضم تدريجياً.';hero.insertAdjacentElement('beforebegin',note);}
+      if(!any&&note)note.remove();
+    }catch(e){}
+  }
+  var _rs=window.renderShop;
+  window.renderShop=function(){var r=_rs.apply(this,arguments);decorate();return r;};
+  var _od=window.openDetail;
+  window.openDetail=function(id){
+    var r=_od.apply(this,arguments);
+    try{var l=S.laptops.find(function(x){return x.id===id;});var h=document.querySelector('#detailBody h3');
+      if(l&&h&&isDemoLap(l)&&!h.querySelector('.fbadge.demo')){var b=document.createElement('span');b.className='fbadge demo';b.style.cssText='background:#fef3c7;color:#92400e;margin-inline-start:6px';b.textContent='نموذج تجريبي';h.appendChild(b);}}catch(e){}
+    return r;
+  };
+  try{decorate();}catch(e){}
+  setTimeout(function(){try{decorate();}catch(e){}},1500);
+})();
+</script>
+</body>
 </html>
